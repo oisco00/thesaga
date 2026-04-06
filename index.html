@@ -401,6 +401,16 @@ function buildQuoteHTMLDocument(){
   return `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>(주)더사가 견적서</title>${getQuoteStyles()}<style>@page{size:A4 portrait;margin:10mm} body{margin:0;background:#fff}</style></head><body>${inner}</body></html>`;
 }
 
+function waitForImages(container){
+  const imgs = [...container.querySelectorAll("img")];
+  if(!imgs.length) return Promise.resolve();
+  return Promise.all(imgs.map(img => new Promise(resolve => {
+    if(img.complete) return resolve();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+  })));
+}
+
 async function createQuotePdfBlob(){
   const inner = buildQuoteInnerHTML();
   if(!inner){
@@ -410,22 +420,31 @@ async function createQuotePdfBlob(){
 
   const wrapper = document.createElement('div');
   wrapper.style.position = 'fixed';
-  wrapper.style.left = '-100000px';
+  wrapper.style.left = '0';
   wrapper.style.top = '0';
   wrapper.style.width = '794px';
   wrapper.style.background = '#fff';
+  wrapper.style.opacity = '0';
+  wrapper.style.pointerEvents = 'none';
+  wrapper.style.zIndex = '-1';
   wrapper.innerHTML = getQuoteStyles() + inner;
   document.body.appendChild(wrapper);
 
   try {
+    await waitForImages(wrapper);
+    await new Promise(resolve => setTimeout(resolve, 300));
+
     const opt = {
       margin: [5, 5, 5, 5],
       filename: `더사가_견적서_${new Date().toISOString().slice(0,10)}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    return await html2pdf().set(opt).from(wrapper).outputPdf('blob');
+
+    const worker = html2pdf().set(opt).from(wrapper).toPdf();
+    const pdf = await worker.get('pdf');
+    return pdf.output('blob');
   } catch(err) {
     console.error(err);
     alert('PDF 생성 중 오류가 발생했습니다. 인터넷 연결 상태와 이미지 파일 경로를 확인해 주세요.');
