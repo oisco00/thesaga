@@ -19,8 +19,8 @@
   select:disabled{background:#f1f3f5;color:#8b929b}
   button{cursor:pointer;border:none;background:#0b57d0;color:#fff;font-weight:700}
   button.secondary{background:#2e7d32}
-  button.share{background:#f9ab00;color:#222}
   button.gray{background:#6c757d}
+  button.share{background:#f9a825;color:#111}
   .tip{font-size:14px;color:#666;margin-top:8px}
   .panel{margin-top:18px;padding:18px}
   .result{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}
@@ -64,7 +64,7 @@
     </div>
     <div class="field" style="min-width:260px">
       <label>견적서 수신처</label>
-      <input type="text" id="receiver" placeholder="예: ○○학교장 / 홍길동" />
+      <input type="text" id="receiver" placeholder="예: ○○학교장 / 홍길동 귀하" />
     </div>
     <div class="field" style="min-width:120px">
       <label>&nbsp;</label>
@@ -293,7 +293,7 @@ function recalcTotal(){
   document.getElementById('grandTotal').textContent = `합계: ${money(total)}`;
 }
 
-function buildQuoteHTML(){
+function buildQuoteInnerHTML(){
   const rows = [...quoteBody.querySelectorAll('tr')];
   if(rows.length === 0) return '';
   const today = new Date();
@@ -323,84 +323,87 @@ function buildQuoteHTML(){
   }
 
   return `
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>(주)더사가 견적서</title>
-<style>
-body{font-family:"Malgun Gothic",Arial,sans-serif;color:#000;margin:0;padding:18px}
-.quote-title{font-size:30px;font-weight:800;text-align:center;border:2px solid #000;padding:10px 0;margin-bottom:8px}
-.quote-date{text-align:right;font-size:14px;margin-bottom:8px}
-.quote-top{display:grid;grid-template-columns:1fr 1.35fr;gap:10px;margin-bottom:10px}
-.box{border:1px solid #000}
-.buyer-box{height:180px;padding:14px;font-size:18px;display:flex;flex-direction:column;justify-content:space-between}
-.seller-table{width:100%;border-collapse:collapse}
-.seller-table td,.seller-table th{border:1px solid #000;padding:6px 8px;font-size:13px;text-align:left}
-.quote-desc{display:grid;grid-template-columns:1fr 1fr;border:1px solid #000;margin-bottom:8px}
-.quote-desc div{padding:8px 10px;font-size:14px;border-right:1px solid #000}
-.quote-desc div:last-child{border-right:none}
-.amount-bar{border:2px solid #000;font-size:18px;font-weight:800;padding:8px 10px;margin-bottom:10px}
-.quote-table{width:100%;border-collapse:collapse}
-.quote-table th,.quote-table td{border:1px solid #000;padding:6px 5px;font-size:12px;text-align:center}
-.quote-table th{background:#f1f1f1}
-.quote-total{margin-top:8px;border:2px solid #000;padding:10px 12px;text-align:right;font-size:18px;font-weight:800}
-.foot{margin-top:12px;font-size:12px;color:#444}
-@page{size:A4 portrait;margin:10mm}
-</style>
-</head>
-<body>
-  <div class="quote-title">[ 견 적 서 ]</div>
-  <div class="quote-date">일자 : ${dateStr}</div>
+  <div class="quote-root">
+    <div class="quote-title">[ 견 적 서 ]</div>
+    <div class="quote-date">일자 : ${dateStr}</div>
 
-  <div class="quote-top">
-    <div class="buyer-box box">
-      <div>${receiver ? receiver + '<br>' : ''}귀하</div>
-      <div style="font-size:14px">아래와 같이 견적합니다.</div>
+    <div class="quote-top">
+      <div class="buyer-box box">
+        <div>${receiver ? receiver + '<br>' : ''}귀하</div>
+        <div style="font-size:14px">아래와 같이 견적합니다.</div>
+      </div>
+      <div class="box">
+        <table class="seller-table">
+          <tr><th style="width:90px">상 호</th><td>(주)더사가</td><th style="width:90px">사업자번호</th><td>515-81-11705</td></tr>
+          <tr><th>대 표</th><td>구 광 회</td><th>종 목</th><td>금속가구 외</td></tr>
+          <tr><th>업 태</th><td>제조업</td><th>업 종</th><td>조달 / 가구</td></tr>
+          <tr><th>주 소</th><td colspan="3">경상북도 경산시 진량읍 일연로 502-13</td></tr>
+          <tr><th>연락처</th><td colspan="3">TEL : 053-852-2033  FAX : 053-852-2034</td></tr>
+          <tr><th>E-MAIL</th><td colspan="3">thesaga2020@naver.com</td></tr>
+        </table>
+      </div>
     </div>
-    <div class="box">
-      <table class="seller-table">
-        <tr><th style="width:90px">상 호</th><td>(주)더사가</td><th style="width:90px">사업자번호</th><td>515-81-11705</td></tr>
-        <tr><th>대 표</th><td>구 광 회</td><th>종 목</th><td>금속가구 외</td></tr>
-        <tr><th>업 태</th><td>제조업</td><th>업 종</th><td>조달 / 가구</td></tr>
-        <tr><th>주 소</th><td colspan="3">경상북도 경산시 진량읍 일연로 502-13</td></tr>
-        <tr><th>연락처</th><td colspan="3">TEL : 053-852-2033  FAX : 053-852-2034</td></tr>
-        <tr><th>E-MAIL</th><td colspan="3">thesaga2020@naver.com</td></tr>
-      </table>
+
+    <div class="quote-desc">
+      <div><strong>견 적 명</strong> 조달 물품 견적</div>
+      <div><strong>일 자</strong> ${dateStr}</div>
     </div>
-  </div>
 
-  <div class="quote-desc">
-    <div><strong>견 적 명</strong> 조달 물품 견적</div>
-    <div><strong>일 자</strong> ${dateStr}</div>
-  </div>
+    <div class="amount-bar">합계금액 : ${money(total)} 정 (부가세 포함가)</div>
 
-  <div class="amount-bar">합계금액 : ${money(total)} 정 (부가세 포함가)</div>
+    <table class="quote-table">
+      <thead>
+        <tr>
+          <th style="width:48px">순번</th>
+          <th>품명</th>
+          <th style="width:92px">이미지</th>
+          <th style="width:180px">규격</th>
+          <th style="width:70px">수량</th>
+          <th style="width:110px">단가</th>
+          <th style="width:120px">금액</th>
+        </tr>
+      </thead>
+      <tbody>${itemRows}</tbody>
+    </table>
 
-  <table class="quote-table">
-    <thead>
-      <tr>
-        <th style="width:48px">순번</th>
-        <th>품명</th>
-        <th style="width:92px">이미지</th>
-        <th style="width:180px">규격</th>
-        <th style="width:70px">수량</th>
-        <th style="width:110px">단가</th>
-        <th style="width:120px">금액</th>
-      </tr>
-    </thead>
-    <tbody>${itemRows}</tbody>
-  </table>
-
-  <div class="quote-total">합 계 : ${money(total)}</div>
-  <div class="foot">※ 견적 유효기간 : 견적일로부터 30일</div>
-</body>
-</html>`;
+    <div class="quote-total">합 계 : ${money(total)}</div>
+    <div class="foot">※ 견적 유효기간 : 견적일로부터 30일</div>
+  </div>`;
 }
 
-async function createPdfBlob(){
-  const html = buildQuoteHTML();
-  if(!html){
+function getQuoteStyles(){
+  return `
+  <style>
+    .quote-root{font-family:"Malgun Gothic",Arial,sans-serif;color:#000;background:#fff;padding:18px;width:794px;margin:0 auto}
+    .quote-title{font-size:30px;font-weight:800;text-align:center;border:2px solid #000;padding:10px 0;margin-bottom:8px}
+    .quote-date{text-align:right;font-size:14px;margin-bottom:8px}
+    .quote-top{display:grid;grid-template-columns:1fr 1.35fr;gap:10px;margin-bottom:10px}
+    .box{border:1px solid #000}
+    .buyer-box{height:180px;padding:14px;font-size:18px;display:flex;flex-direction:column;justify-content:space-between}
+    .seller-table{width:100%;border-collapse:collapse;margin-top:0}
+    .seller-table td,.seller-table th{border:1px solid #000;padding:6px 8px;font-size:13px;text-align:left}
+    .quote-desc{display:grid;grid-template-columns:1fr 1fr;border:1px solid #000;margin-bottom:8px}
+    .quote-desc div{padding:8px 10px;font-size:14px;border-right:1px solid #000}
+    .quote-desc div:last-child{border-right:none}
+    .amount-bar{border:2px solid #000;font-size:18px;font-weight:800;padding:8px 10px;margin-bottom:10px}
+    .quote-table{width:100%;border-collapse:collapse;margin-top:0}
+    .quote-table th,.quote-table td{border:1px solid #000;padding:6px 5px;font-size:12px;text-align:center}
+    .quote-table th{background:#f1f1f1}
+    .quote-total{margin-top:8px;border:2px solid #000;padding:10px 12px;text-align:right;font-size:18px;font-weight:800}
+    .foot{margin-top:12px;font-size:12px;color:#444}
+    .quote-root img{display:block;margin:0 auto}
+  </style>`;
+}
+
+function buildQuoteHTMLDocument(){
+  const inner = buildQuoteInnerHTML();
+  if(!inner) return '';
+  return `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>(주)더사가 견적서</title>${getQuoteStyles()}<style>@page{size:A4 portrait;margin:10mm} body{margin:0;background:#fff}</style></head><body>${inner}</body></html>`;
+}
+
+async function createQuotePdfBlob(){
+  const inner = buildQuoteInnerHTML();
+  if(!inner){
     alert('견적 리스트가 비어 있습니다.');
     return null;
   }
@@ -411,71 +414,78 @@ async function createPdfBlob(){
   wrapper.style.top = '0';
   wrapper.style.width = '794px';
   wrapper.style.background = '#fff';
-  wrapper.innerHTML = html;
+  wrapper.innerHTML = getQuoteStyles() + inner;
   document.body.appendChild(wrapper);
 
-  const target = wrapper.querySelector('body') || wrapper;
-
   try {
-    const worker = html2pdf().set({
-      margin: 0,
+    const opt = {
+      margin: [5, 5, 5, 5],
       filename: `더사가_견적서_${new Date().toISOString().slice(0,10)}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(target);
-
-    const blob = await worker.outputPdf('blob');
-    return blob;
-  } catch (err) {
+    };
+    return await html2pdf().set(opt).from(wrapper).outputPdf('blob');
+  } catch(err) {
     console.error(err);
-    alert('PDF 생성 중 오류가 발생했습니다.');
+    alert('PDF 생성 중 오류가 발생했습니다. 인터넷 연결 상태와 이미지 파일 경로를 확인해 주세요.');
     return null;
   } finally {
     wrapper.remove();
   }
 }
 
-async function generateQuotePdf(){
-  const blob = await createPdfBlob();
-  if(!blob) return;
-
-  const pdfUrl = URL.createObjectURL(blob);
-  window.open(pdfUrl, '_blank');
-  setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
+function generateQuotePrint(){
+  const html = buildQuoteHTMLDocument();
+  if(!html){
+    alert('견적 리스트가 비어 있습니다.');
+    return;
+  }
+  const win = window.open('', '_blank', 'width=1000,height=1200');
+  if(!win){
+    alert('팝업이 차단되었습니다. 팝업 허용 후 다시 시도해 주세요.');
+    return;
+  }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  win.focus();
 }
 
-async function shareQuotePdf(){
-  const blob = await createPdfBlob();
-  if(!blob) return;
+async function shareQuote(){
+  const pdfBlob = await createQuotePdfBlob();
+  if(!pdfBlob) return;
+
+  if(pdfBlob.size < 1000){
+    alert('PDF 파일이 비어 있습니다. 이미지 경로나 견적 데이터 상태를 다시 확인해 주세요.');
+    return;
+  }
 
   const fileName = `더사가_견적서_${new Date().toISOString().slice(0,10)}.pdf`;
-  const file = new File([blob], fileName, { type: 'application/pdf' });
+  const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
 
-  try {
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
       await navigator.share({
         title: '(주)더사가 견적서',
         text: '(주)더사가 견적서입니다.',
         files: [file]
       });
       return;
-    }
-  } catch (err) {
-    if (err && err.name !== 'AbortError') {
-      console.error(err);
+    } catch (err) {
+      if (err && err.name !== 'AbortError') console.error(err);
     }
   }
 
-  const url = URL.createObjectURL(blob);
+  const pdfUrl = URL.createObjectURL(pdfBlob);
   const a = document.createElement('a');
-  a.href = url;
+  a.href = pdfUrl;
   a.download = fileName;
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 60000);
-  alert('이 환경에서는 바로 공유가 제한되어 PDF 파일로 다운로드했습니다. 다운로드한 PDF를 카카오톡에 첨부해 보내시면 됩니다.');
+  setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
+  alert('이 기기에서는 바로 공유가 제한되어 PDF 파일로 다운로드했습니다. 다운로드된 파일을 카카오톡에 첨부해 보내세요.');
 }
 
 function resetAll(){
@@ -486,6 +496,8 @@ function resetAll(){
   modelSel.disabled = true;
   receiverInput.value = '';
   resultBox.innerHTML = '<div class="empty">분류를 먼저 선택하세요.</div>';
+  quoteBody.innerHTML = '';
+  recalcTotal();
 }
 
 function initCategory(){
@@ -502,8 +514,8 @@ specSel.addEventListener('change', () => refreshDependent('spec'));
 modelSel.addEventListener('change', () => refreshDependent('model'));
 document.getElementById('searchBtn').addEventListener('click', searchProduct);
 document.getElementById('resetBtn').addEventListener('click', resetAll);
-document.getElementById('quoteBtn').addEventListener('click', generateQuotePdf);
-document.getElementById('shareBtn').addEventListener('click', shareQuotePdf);
+document.getElementById('quoteBtn').addEventListener('click', generateQuotePrint);
+document.getElementById('shareBtn').addEventListener('click', shareQuote);
 initCategory();
 </script>
 </body>
