@@ -160,12 +160,12 @@
       </div>
     </div>
     <div class="actions">
-      <button class="secondary" id="quoteBtn">견적서 생성</button>
-      <button class="orange" id="saveImageBtn">견적서 이미지 저장</button>
-      <button id="shareSavedBtn">저장한 이미지 공유</button>
+      <button class="secondary" id="quoteBtn">견적서생성</button>
+      <button class="orange" id="saveImageBtn">이미지저장</button>
+      <button id="shareSavedBtn">이미지공유</button>
       <input type="file" id="shareFileInput" accept="image/*" style="display:none">
     </div>
-    <div class="help">하단 할인율을 적용한 뒤, 할인금액과 최종 합계를 견적서 하단에 표시합니다. 로고는 <strong>logo/logo.png</strong>를 우선 사용하고, 없으면 <strong>logo.png</strong>를 자동 시도합니다.</div>
+    <div class="help">하단 할인율을 적용한 뒤, 할인금액과 최종 합계를 견적서 하단에 표시합니다. 로고는 <strong>logo/logo.png</strong>를 우선 사용하고, 없으면 <strong>./logo/logo.png</strong>, <strong>logo.png</strong>, <strong>images/logo.png</strong> 순서로 자동 시도합니다.</div>
   </div>
 </div>
 
@@ -312,7 +312,20 @@ function numberToKorean(value){
   return result + '원';
 }
 function getLogoHTML(){
-  return `<img src="images/logo.png" alt="더사가 로고" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo.png';}else{this.style.display='none';this.parentNode.innerHTML='<span style=\"font-size:30px;font-weight:800;\">(주)더사가</span>';}">`;
+  return `<img src="logo/logo.png" alt="더사가 로고" onerror="
+    if(!this.dataset.fallback1){
+      this.dataset.fallback1='1';
+      this.src='./logo/logo.png';
+    }else if(!this.dataset.fallback2){
+      this.dataset.fallback2='1';
+      this.src='logo.png';
+    }else if(!this.dataset.fallback3){
+      this.dataset.fallback3='1';
+      this.src='images/logo.png';
+    }else{
+      this.style.display='none';
+      this.parentNode.innerHTML='<span style=\"font-size:30px;font-weight:800;\">(주)더사가</span>';
+    }">`;
 }
 function getQuoteMeta(){
   const rows = [...quoteBody.querySelectorAll('tr')].map(tr => {
@@ -445,7 +458,7 @@ function showPreview(){ const html = buildQuotePreviewHTML(); if(!html){ alert('
 function closePreview(){ previewModal.classList.remove('show'); }
 async function makePreviewImageFile(){
   const capture = document.getElementById('quoteCaptureArea');
-  if(!capture){ alert('먼저 견적서 생성을 눌러 미리보기를 띄워 주세요.'); return null; }
+  if(!capture){ alert('먼저 견적서생성을 눌러 미리보기를 띄워 주세요.'); return null; }
   if(typeof html2canvas === 'undefined'){ alert('이미지 저장 라이브러리를 불러오지 못했습니다. 인터넷 연결 상태를 확인해 주세요.'); return null; }
   const images = [...capture.querySelectorAll('img')];
   await Promise.all(images.map(img => img.complete ? Promise.resolve() : new Promise(resolve => { img.onload = img.onerror = resolve; })));
