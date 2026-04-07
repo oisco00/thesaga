@@ -47,10 +47,10 @@
   .modal-body{flex:1;background:#dfe5eb;overflow:auto;padding:18px}
   .preview-stage{width:794px;min-height:1123px;margin:0 auto;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.18)}
   .quote-page{width:794px;min-height:1123px;background:#fff;color:#000;padding:14px 14px 18px;font-family:"Malgun Gothic",Arial,sans-serif}
-  .quote-top-title{position:relative;height:68px;margin-bottom:8px}
-  .quote-logo-wrap{position:absolute;left:6px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:flex-start;height:54px;width:220px}
-  .quote-logo-wrap img{max-height:46px;max-width:190px;object-fit:contain;display:block}
-  .quote-doc-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max-content;text-align:center;font-size:34px;font-weight:800;letter-spacing:10px}
+  .quote-top-title{display:grid;grid-template-columns:220px 1fr;align-items:center;margin-bottom:8px}
+  .quote--wrap{display:flex;align-items:center;justify-content:flex-start;height:54px;padding-left:6px}
+  .quote--wrap img{max-height:46px;max-width:190px;object-fit:contain}
+  .quote-doc-title{text-align:center;font-size:34px;font-weight:800;letter-spacing:10px}
   .quote-head-grid{display:grid;grid-template-columns:39% 61%;border:2px solid #000;border-bottom:none}
   .buyer-area{border-right:2px solid #000;display:flex;flex-direction:column;min-height:145px}
   .buyer-main{flex:1;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700}
@@ -95,11 +95,9 @@
     .modal-box{width:100vw;height:100vh;border-radius:0}
     .modal-body{padding:10px}
     .preview-stage,.quote-page{width:100%;min-height:auto}
-    .quote-head-grid{grid-template-columns:1fr}
+    .quote-top-title,.quote-head-grid{grid-template-columns:1fr}
     .buyer-area{border-right:none;border-bottom:2px solid #000}
-    .quote-top-title{height:60px}
-    .quote-logo-wrap{width:160px}
-    .quote-doc-title{left:50%;transform:translate(-50%,-50%);letter-spacing:4px;font-size:28px}
+    .quote-doc-title{letter-spacing:4px;font-size:28px}
   }
 </style>
 </head>
@@ -315,21 +313,6 @@ function numberToKorean(value){
 }
 function getLogoHTML(){
   return `<img src="logo/logo.png" alt="더사가 로고" class="quote-logo">`;
-}
-function applyLogoFallback(root){
-  const logo = root.querySelector('.quote-logo');
-  if(!logo) return;
-  const paths = ['logo/logo.png','./logo/logo.png','logo.png','images/logo.png'];
-  let idx = 0;
-  function tryPath(){
-    if(idx >= paths.length){
-      logo.style.display = 'none';
-      return;
-    }
-    logo.src = paths[idx++];
-  }
-  logo.onerror = tryPath;
-  tryPath();
 }
 function applyLogoFallback(root){
   const logo = root.querySelector('.quote-logo');
