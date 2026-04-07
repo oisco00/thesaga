@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>(주)더사가 견적 시스템</title>
+
+<script src="./thesaga_data.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+body{font-family:"Malgun Gothic"; margin:0; background:#f5f5f5}
+.wrap{max-width:1200px;margin:auto;padding:20px}
+
+button{padding:10px;border:none;color:#fff;border-radius:8px;font-weight:bold}
+#quoteBtn{background:#0b57d0}
+#saveImgBtn{background:#2e7d32}
+#shareImgBtn{background:#f57c00}
+
+.actions{display:flex;gap:10px}
+.actions button{flex:1}
+
+.preview{background:#fff;padding:20px;margin-top:20px}
+
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #000;padding:5px;text-align:center}
+
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<h2>(주)더사가 견적 시스템</h2>
+
+<button id="quoteBtn">견적서생성</button>
+
+<div class="actions" style="margin-top:10px;">
+  <button id="saveImgBtn">이미지저장</button>
+  <button id="shareImgBtn">이미지공유</button>
+</div>
+
+<div id="previewArea" class="preview" style="display:none;"></div>
+
+</div>
+
+<script>
+
+function buildQuote(){
+  const today = new Date().toLocaleDateString();
+
+  let total = 120000; // 테스트값
+  let discountRate = 10;
+
+  let discount = Math.floor((total * discountRate / 100)/10)*10;
+  let finalTotal = total - discount;
+
+  return `
+  <div class="quote-preview">
+  
+  <table>
+    <tr>
+      <td colspan="4" style="text-align:left;">
+        <img src="images/logo.png" style="height:40px" onerror="this.style.display='none'">
+      </td>
+      <td colspan="4"><b>[ 견 적 서 ]</b></td>
+    </tr>
+
+    <tr>
+      <td colspan="4">귀하</td>
+      <td colspan="4">${today}</td>
+    </tr>
+
+    <tr>
+      <td>품명</td>
+      <td>수량</td>
+      <td>단가</td>
+      <td>금액</td>
+      <td colspan="4"></td>
+    </tr>
+
+    <tr>
+      <td>책상</td>
+      <td>1</td>
+      <td>120,000</td>
+      <td>120,000</td>
+      <td colspan="4"></td>
+    </tr>
+
+    <tr>
+      <td colspan="2">할인</td>
+      <td>${discountRate}%</td>
+      <td>-${discount.toLocaleString()}</td>
+      <td colspan="4"></td>
+    </tr>
+
+    <tr>
+      <td colspan="2">합계</td>
+      <td colspan="2">${finalTotal.toLocaleString()} 원</td>
+      <td colspan="4"></td>
+    </tr>
+
+  </table>
+
+  </div>
+  `;
+}
+
+// 견적서 생성
+document.getElementById('quoteBtn').onclick = () => {
+  const html = buildQuote();
+  const preview = document.getElementById('previewArea');
+  preview.innerHTML = html;
+  preview.style.display = 'block';
+};
+
+// 이미지 저장
+document.getElementById('saveImgBtn').onclick = async () => {
+  const el = document.querySelector('.quote-preview');
+  if(!el) return alert('견적서 생성 먼저');
+
+  const canvas = await html2canvas(el,{scale:2});
+  const link = document.createElement('a');
+  link.download = '견적서.png';
+  link.href = canvas.toDataURL();
+  link.click();
+};
+
+// 이미지 공유
+document.getElementById('shareImgBtn').onclick = async () => {
+  const el = document.querySelector('.quote-preview');
+  if(!el) return alert('견적서 생성 먼저');
+
+  const canvas = await html2canvas(el,{scale:2});
+  canvas.toBlob(async (blob)=>{
+    const file = new File([blob],'견적서.png',{type:'image/png'});
+
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({
+        title:'견적서',
+        files:[file]
+      });
+    }else{
+      alert('공유 미지원 기기');
+    }
+  });
+};
+
+</script>
+</body>
+</html>
