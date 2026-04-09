@@ -190,7 +190,9 @@ let lastSavedImageFile = null;
 function num(v){ if(v===null||v===undefined||v==='') return 0; const s=String(v).replace(/[^0-9.-]/g,''); return s ? Number(s) : 0; }
 function money(v){ return num(v).toLocaleString('ko-KR') + '원'; }
 function moneyPlain(v){ return num(v).toLocaleString('ko-KR'); }
-function uniq(arr){ return [...new Set(arr.filter(v => v !== null && v !== undefined && String(v).trim() !== ''))].sort(); }
+function uniq(arr){
+  return [...new Set(arr.filter(v => v !== null && v !== undefined && String(v).trim() !== ''))].sort();
+}
 function fillSelect(sel, values){ sel.innerHTML = '<option value="">선택</option>'; values.forEach(v => { const opt = document.createElement('option'); opt.value = String(v); opt.textContent = String(v); sel.appendChild(opt); }); }
 
 function getImageUrl(item){
