@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>(주)더사가 견적 시스템</title>
+<title>(주)더사가 견적 시스템 - 이미지경로 적용판</title>
 <script src="./thesaga_data.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -121,6 +121,8 @@
     </div>
   </div>
 
+  <div class="tip">이미지는 엑셀의 <strong>이미지경로</strong> 값을 우선 사용합니다. 예: <strong>images3/25025573.png</strong></div>
+
   <div class="panel">
     <h2 style="margin-top:0">조회 결과</h2>
     <div id="resultBox" class="empty">분류를 먼저 선택하세요.</div>
@@ -212,7 +214,7 @@ function getImageUrl(item){
 
   return "";
 }
- 
+
 function getLogoUrl(){
   return CDN_BASE + "logo/logo.png";
 }
