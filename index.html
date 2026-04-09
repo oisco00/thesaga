@@ -359,7 +359,7 @@ function getQuoteMeta(){
     const c = tr.children;
     const img = tr.querySelector('img');
     return {
-      name:c[2].textContent,
+      name:c[1].textContent,
       model:c[3].textContent,
       spec:c[4].textContent,
       unitPrice:num(tr.querySelector('.price').dataset.price),
@@ -443,7 +443,7 @@ function buildQuotePreviewHTML(){
     <div class="quote-body-wrap">
       <table class="quote-table">
         <thead>
-          <tr><th style="width:40px">순번</th><th>분류</th><th style="width:128px">이미지</th><th style="width:150px">규격</th><th style="width:40px">수량</th><th style="width:72px">단가</th><th style="width:124px">금액</th><th style="width:98px">비고</th></tr>
+          <tr><th style="width:40px">순번</th><th>품명</th><th style="width:128px">이미지</th><th style="width:150px">규격</th><th style="width:40px">수량</th><th style="width:72px">단가</th><th style="width:124px">금액</th><th style="width:98px">비고</th></tr>
         </thead>
         <tbody>
           ${itemRows}
