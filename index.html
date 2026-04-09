@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>(주)더사가 견적 시스템 - 이미지경로 적용판</title>
+<title>(주)더사가 견적 시스템 - 견적서 양식 교정본</title>
 <script src="./thesaga_data.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,8 +22,7 @@
   button.secondary{background:#2e7d32}
   button.gray{background:#6c757d}
   button.orange{background:#ef6c00}
-  .tip{font-size:14px;color:#666;margin-top:8px}
-  .panel{margin-top:18px;padding:18px}
+  .panel{margin-top:12px;padding:18px}
   .result{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}
   .imgbox{width:100%;height:240px;border:1px solid #d8dee6;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#fff}
   .result img{max-width:100%;max-height:220px;object-fit:contain}
@@ -37,7 +36,6 @@
   .actions button{min-width:140px}
   .sum{font-size:22px;font-weight:800;text-align:right;margin-top:14px}
   .empty{color:#8a8f98}
-  .help{font-size:13px;color:#666;margin-top:8px}
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999}
   .modal.show{display:flex;align-items:center;justify-content:center}
   .modal-box{width:min(980px,96vw);height:min(92vh,96vh);background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
@@ -46,43 +44,67 @@
   .modal-actions{display:flex;gap:8px;flex-wrap:wrap}
   .modal-body{flex:1;background:#dfe5eb;overflow:auto;padding:18px}
   .preview-stage{width:794px;min-height:1123px;margin:0 auto;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.18)}
-  .quote-page{width:794px;min-height:1123px;background:#fff;color:#000;padding:14px 14px 18px;font-family:"Malgun Gothic",Arial,sans-serif}
-  .quote-top-title{position:relative;height:64px;margin-bottom:8px}
+
+  :root{
+    --outer: 2.2px;
+    --inner: 1px;
+    --lav: #d8cfe2;
+    --neg: #c62828;
+  }
+
+  .quote-page{width:794px;min-height:1123px;background:#fff;color:#000;padding:16px 18px 18px;font-family:"Malgun Gothic",Arial,sans-serif}
+  .quote-top-title{position:relative;height:64px;margin-bottom:10px}
   .quote-logo-wrap{position:absolute;left:6px;top:6px;height:52px;display:flex;align-items:center;justify-content:flex-start;max-width:220px}
   .quote-logo-wrap img{max-height:46px;max-width:210px;object-fit:contain}
   .quote-doc-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:800;letter-spacing:10px;white-space:nowrap}
-  .quote-head-grid{display:grid;grid-template-columns:39% 61%;border:2px solid #000;border-bottom:none}
-  .buyer-area{border-right:2px solid #000;display:flex;flex-direction:column;min-height:145px}
+
+  .quote-head-wrap{border:var(--outer) solid #000}
+  .quote-head-grid{display:grid;grid-template-columns:39% 61%}
+  .buyer-area{border-right:var(--outer) solid #000;display:flex;flex-direction:column;min-height:145px}
   .buyer-main{flex:1;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;text-align:center;line-height:1.4}
-  .buyer-note{border-top:1px solid #000;padding:6px 8px;font-size:12px;text-align:left}
-  .seller-table{width:100%;border-collapse:collapse;margin:0}
-  .seller-table td,.seller-table th{border:1px solid #000;padding:6px 8px;font-size:13px;text-align:center;font-weight:700}
+  .buyer-note{border-top:var(--inner) solid #000;padding:6px 8px;font-size:12px;text-align:left}
+
+  .seller-table,.quote-name-row,.amount-row,.quote-table{width:100%;border-collapse:collapse;margin:0}
+  .seller-table td,.seller-table th{border:var(--inner) solid #000;padding:6px 8px;font-size:13px;text-align:center;font-weight:700}
+  .seller-table tr:first-child td,.seller-table tr:first-child th{border-top:none}
+  .seller-table tr:last-child td,.seller-table tr:last-child th{border-bottom:none}
+  .seller-table td:last-child,.seller-table th:last-child{border-right:none}
+  .seller-table td:first-child,.seller-table th:first-child{border-left:none}
   .seller-table td.value{text-align:left;font-weight:600}
   .seller-table td.centerval{text-align:center;font-weight:600}
-  .quote-name-row,.amount-row,.quote-table,.special-box{margin-top:0}
-  .quote-name-row{width:100%;border-collapse:collapse;margin:0}
-  .quote-name-row td{border:2px solid #000;border-top:none;padding:7px 8px;font-size:14px;font-weight:700}
+
+  .quote-name-row td{border-top:var(--outer) solid #000;border-bottom:var(--outer) solid #000;border-left:var(--inner) solid #000;border-right:var(--inner) solid #000;padding:7px 8px;font-size:14px;font-weight:700}
+  .quote-name-row td:first-child{border-left:none}
+  .quote-name-row td:last-child{border-right:none}
   .quote-name-row td.label{width:120px;background:#fff;text-align:center}
   .quote-name-row td.value{text-align:center}
-  .amount-row{width:100%;border-collapse:collapse;margin:0}
-  .amount-row td{border:2px solid #000;border-top:none;padding:7px 8px;font-size:14px;font-weight:700}
+
+  .amount-row td{border-top:none;border-bottom:var(--outer) solid #000;border-left:var(--inner) solid #000;border-right:var(--inner) solid #000;padding:7px 8px;font-size:14px;font-weight:700}
+  .amount-row td:first-child{border-left:none}
+  .amount-row td:last-child{border-right:none}
   .amount-row td.amount-text{text-align:center}
-  .amount-row td.currency{width:42px;text-align:center}
-  .amount-row td.amount-num{width:170px;text-align:right}
-  .quote-table{width:100%;border-collapse:collapse;margin:0}
-  .quote-table th,.quote-table td{border:1px solid #000;padding:5px 4px;font-size:12px;text-align:center}
-  .quote-table th{background:#d9cde4;font-weight:800}
+  .amount-row td.currency{width:55px;text-align:center}
+  .amount-row td.amount-num{width:220px;text-align:right}
+
+  .quote-body-wrap{border-left:var(--outer) solid #000;border-right:var(--outer) solid #000;border-bottom:var(--outer) solid #000}
+  .quote-table th,.quote-table td{border:var(--inner) solid #000;padding:5px 4px;font-size:12px;text-align:center}
+  .quote-table thead th{background:var(--lav);font-weight:800;border-top:none}
+  .quote-table th:first-child,.quote-table td:first-child{border-left:none}
+  .quote-table th:last-child,.quote-table td:last-child{border-right:none}
   .quote-table td.item-name{text-align:left;padding-left:8px}
   .quote-table td.item-remark{text-align:left;padding-left:8px}
   .quote-table td.item-img{padding:2px}
   .quote-table td.item-img img{width:62px;height:62px;object-fit:contain}
   .quote-table tbody tr.data-row td{height:40px}
   .quote-table tbody tr.blank-row td{height:52px}
-  .discount-row td,.final-row td{font-weight:700;background:#faf7fc}
-  .discount-row td.percent-cell{font-size:16px}
-  .final-row td{background:#d9cde4}
-  .special-box{border:2px solid #000;border-top:none;min-height:78px}
-  .special-title{padding:4px 8px;border-bottom:1px solid #000;font-weight:800;font-size:13px}
+
+  .discount-row td{font-weight:700;background:#f6f2f8}
+  .discount-row td.rate-cell{font-size:16px;letter-spacing:.5px}
+  .discount-row td.neg-amount{color:var(--neg);font-weight:800}
+  .final-row td{font-weight:700;background:var(--lav)}
+
+  .special-box{border-top:var(--inner) solid #000;min-height:78px}
+  .special-title{padding:4px 8px;border-bottom:var(--inner) solid #000;font-weight:800;font-size:13px}
   .special-content{padding:8px 10px;font-size:13px;min-height:56px;white-space:pre-wrap}
 </style>
 </head>
@@ -120,8 +142,6 @@
       <button class="gray" id="resetBtn">초기화</button>
     </div>
   </div>
-
-  <div class="tip">이미지는 엑셀의 <strong>이미지경로</strong> 값을 우선 사용합니다. 예: <strong>images3/25025573.png</strong></div>
 
   <div class="panel">
     <h2 style="margin-top:0">조회 결과</h2>
@@ -195,30 +215,21 @@ function fillSelect(sel, values){ sel.innerHTML = '<option value="">선택</opti
 
 function getImageUrl(item){
   let p = String(item["이미지경로"] || "");
-
   p = p.replace(/[\r\n\t]/g, "").trim();
   p = p.replace(/[\u200B-\u200D\uFEFF]/g, "");
-
   if (p) {
     if (/^https?:\/\//i.test(p)) return p;
     return CDN_BASE + p.replace(/^\.?\//, "");
   }
-
   let imgName = String(item["이미지명"] || "");
   imgName = imgName.replace(/[\r\n\t]/g, "").trim();
   imgName = imgName.replace(/[\u200B-\u200D\uFEFF]/g, "");
-
-  if (imgName) {
-    return CDN_BASE + "images3/" + imgName;
-  }
-
+  if (imgName) return CDN_BASE + "images3/" + imgName;
   return "";
 }
-
-function getLogoUrl(){
-  return CDN_BASE + "logo/logo.png";
-}
+function getLogoUrl(){ return CDN_BASE + "logo/logo.png"; }
 function getFilteredBase(){ const c = categorySel.value; if(!c) return []; return data.filter(x => x["분류"] === c); }
+
 function refreshDependent(changedBy=''){
   const c = categorySel.value;
   if(!c){ specSel.disabled = true; modelSel.disabled = true; fillSelect(specSel, []); fillSelect(modelSel, []); resultBox.innerHTML = '<div class="empty">분류를 먼저 선택하세요.</div>'; return; }
@@ -268,16 +279,30 @@ function autoDisplayIfSingle(){
 function searchProduct(){
   if(!categorySel.value){ alert('분류는 반드시 선택해야 합니다.'); categorySel.focus(); return; }
   const matches = getMatches();
-  if(matches.length === 0) renderResult(null); else if(matches.length === 1) renderResult(matches[0]); else alert(`조건에 맞는 품목이 ${matches.length}건입니다. 규격 또는 모델을 추가로 선택해 주세요.`);
+  if(matches.length === 0) renderResult(null);
+  else if(matches.length === 1) renderResult(matches[0]);
+  else alert(`조건에 맞는 품목이 ${matches.length}건입니다. 규격 또는 모델을 추가로 선택해 주세요.`);
 }
-function addQuoteByCurrent(){ const matches = getMatches(); if(matches.length === 1) addToQuote(matches[0]); else alert('하나의 품목으로 좁혀진 뒤 추가할 수 있습니다.'); }
+function addQuoteByCurrent(){
+  const matches = getMatches();
+  if(matches.length === 1) addToQuote(matches[0]);
+  else alert('하나의 품목으로 좁혀진 뒤 추가할 수 있습니다.');
+}
 window.addQuoteByCurrent = addQuoteByCurrent;
+
 function addToQuote(item){
   const key = String(item["식별번호"] || item["모델명"] || Math.random());
   const existed = [...quoteBody.querySelectorAll('tr')].find(tr => tr.dataset.key === key);
-  if(existed){ const qtyInput = existed.querySelector('.qty'); qtyInput.value = num(qtyInput.value) + 1; recalcRow(existed); return; }
-  const tr = document.createElement('tr'); tr.dataset.key = key;
-  const imgUrl = getImageUrl(item); const price = num(item["가격(원)"]);
+  if(existed){
+    const qtyInput = existed.querySelector('.qty');
+    qtyInput.value = num(qtyInput.value) + 1;
+    recalcRow(existed);
+    return;
+  }
+  const tr = document.createElement('tr');
+  tr.dataset.key = key;
+  const imgUrl = getImageUrl(item);
+  const price = num(item["가격(원)"]);
   tr.innerHTML = `
     <td>${imgUrl ? `<img src="${imgUrl}" loading="lazy" onerror="this.style.display='none'">` : ''}</td>
     <td>${item["분류"] || ''}</td>
@@ -294,64 +319,166 @@ function addToQuote(item){
   recalcRow(tr);
 }
 window.removeRow = function(btn){ btn.closest('tr').remove(); recalcTotal(); }
-function recalcRow(tr){ const price = num(tr.querySelector('.price').dataset.price); const qty = Math.max(1, num(tr.querySelector('.qty').value)); tr.querySelector('.qty').value = qty; tr.querySelector('.amount').textContent = money(price * qty); recalcTotal(); }
+
+function recalcRow(tr){
+  const price = num(tr.querySelector('.price').dataset.price);
+  const qty = Math.max(1, num(tr.querySelector('.qty').value));
+  tr.querySelector('.qty').value = qty;
+  tr.querySelector('.amount').textContent = money(price * qty);
+  recalcTotal();
+}
 function floorToTen(value){ return Math.floor(num(value) / 10) * 10; }
-function recalcTotal(){ const meta = getQuoteMeta(); document.getElementById('grandTotal').textContent = `공급가 합계: ${money(meta.subtotal)} / 할인금액: ${money(meta.discountAmount)} / 최종합계: ${money(meta.finalTotal)}`; }
+function recalcTotal(){
+  const meta = getQuoteMeta();
+  document.getElementById('grandTotal').textContent = `공급가 합계: ${money(meta.subtotal)} / 할인금액: ${money(meta.discountAmount)} / 최종합계: ${money(meta.finalTotal)}`;
+}
 function numberToKorean(value){
-  const units = ['', '만', '억', '조']; const nums = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구']; const smallUnits = ['', '십', '백', '천'];
-  let n = Math.floor(num(value)); if(n === 0) return '영원'; let result = ''; let unitIndex = 0;
-  while(n > 0){ const part = n % 10000; if(part > 0){ let partText = ''; const digits = String(part).padStart(4, '0').split('').map(Number);
-      digits.forEach((digit, idx) => { if(digit === 0) return; const pos = 3 - idx; partText += (digit === 1 && pos > 0 ? '' : nums[digit]) + smallUnits[pos]; });
-      result = partText + units[unitIndex] + result; }
-    n = Math.floor(n / 10000); unitIndex += 1; }
+  const units = ['', '만', '억', '조'];
+  const nums = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+  const smallUnits = ['', '십', '백', '천'];
+  let n = Math.floor(num(value));
+  if(n === 0) return '영원';
+  let result = '';
+  let unitIndex = 0;
+  while(n > 0){
+    const part = n % 10000;
+    if(part > 0){
+      let partText = '';
+      const digits = String(part).padStart(4, '0').split('').map(Number);
+      digits.forEach((digit, idx) => {
+        if(digit === 0) return;
+        const pos = 3 - idx;
+        partText += (digit === 1 && pos > 0 ? '' : nums[digit]) + smallUnits[pos];
+      });
+      result = partText + units[unitIndex] + result;
+    }
+    n = Math.floor(n / 10000);
+    unitIndex += 1;
+  }
   return result + '원';
 }
 function getQuoteMeta(){
   const rows = [...quoteBody.querySelectorAll('tr')].map(tr => {
-    const c = tr.children; const img = tr.querySelector('img');
-    return { name:c[2].textContent, model:c[3].textContent, spec:c[4].textContent, unitPrice:num(tr.querySelector('.price').dataset.price), qty:num(tr.querySelector('.qty').value), amount:num(tr.querySelector('.price').dataset.price) * num(tr.querySelector('.qty').value), imgSrc: img ? img.src : '' };
+    const c = tr.children;
+    const img = tr.querySelector('img');
+    return {
+      name:c[2].textContent,
+      model:c[3].textContent,
+      spec:c[4].textContent,
+      unitPrice:num(tr.querySelector('.price').dataset.price),
+      qty:num(tr.querySelector('.qty').value),
+      amount:num(tr.querySelector('.price').dataset.price) * num(tr.querySelector('.qty').value),
+      imgSrc: img ? img.src : ''
+    };
   });
   const subtotal = rows.reduce((sum,r)=>sum+r.amount,0);
   const discountRate = Math.max(0, Math.min(100, num(discountRateInput.value)));
   const discountAmount = floorToTen(subtotal * discountRate / 100);
   const finalTotal = floorToTen(subtotal - discountAmount);
-  const today = new Date(); const weekday = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'][today.getDay()];
-  return { rows, subtotal, discountRate, discountAmount, finalTotal, dateStr: `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일 ${weekday}`, fileDate: `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}_${String(today.getHours()).padStart(2,'0')}${String(today.getMinutes()).padStart(2,'0')}${String(today.getSeconds()).padStart(2,'0')}`, receiver: (receiverInput.value || '').trim(), specialNote: (specialNoteInput.value || '').trim() };
+  const today = new Date();
+  const weekday = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'][today.getDay()];
+  return {
+    rows, subtotal, discountRate, discountAmount, finalTotal,
+    dateStr: `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일 ${weekday}`,
+    fileDate: `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}_${String(today.getHours()).padStart(2,'0')}${String(today.getMinutes()).padStart(2,'0')}${String(today.getSeconds()).padStart(2,'0')}`,
+    receiver: (receiverInput.value || '').trim(),
+    specialNote: (specialNoteInput.value || '').trim()
+  };
 }
 function buildQuotePreviewHTML(){
-  const meta = getQuoteMeta(); if(meta.rows.length === 0) return '';
-  let itemRows = ''; meta.rows.forEach((r, idx) => { itemRows += `<tr class="data-row"><td>${idx+1}</td><td class="item-name">${r.name || ''}</td><td class="item-img">${r.imgSrc ? `<img src="${r.imgSrc}">` : ''}</td><td>${r.spec || ''}</td><td>${r.qty || ''}</td><td>${moneyPlain(r.unitPrice)}</td><td>${moneyPlain(r.amount)}</td><td class="item-remark"></td></tr>`; });
-  for(let i=meta.rows.length; i<10; i++) itemRows += `<tr class="blank-row"><td>${i+1}</td><td></td><td></td><td></td><td></td><td></td><td>-</td><td></td></tr>`;
+  const meta = getQuoteMeta();
+  if(meta.rows.length === 0) return '';
+
+  let itemRows = '';
+  meta.rows.forEach((r, idx) => {
+    itemRows += `<tr class="data-row">
+      <td>${idx+1}</td>
+      <td class="item-name">${r.name || ''}</td>
+      <td class="item-img">${r.imgSrc ? `<img src="${r.imgSrc}">` : ''}</td>
+      <td>${r.spec || ''}</td>
+      <td>${r.qty || ''}</td>
+      <td>${moneyPlain(r.unitPrice)}</td>
+      <td>${moneyPlain(r.amount)}</td>
+      <td class="item-remark"></td>
+    </tr>`;
+  });
+  for(let i=meta.rows.length; i<10; i++){
+    itemRows += `<tr class="blank-row"><td>${i+1}</td><td></td><td></td><td></td><td></td><td></td><td>-</td><td></td></tr>`;
+  }
+
   const buyerText = meta.receiver ? `${meta.receiver}<br>귀하` : '귀하';
+  const discountRateText = `${meta.discountRate} %`;
+  const discountAmountText = `- ${moneyPlain(meta.discountAmount)}`;
+
   return `
   <div class="quote-page" id="quoteCaptureArea">
-    <div class="quote-top-title"><div class="quote-logo-wrap"><img src="${getLogoUrl()}" onerror="this.style.display='none'"></div><div class="quote-doc-title">[ 견 적 서 ]</div></div>
-    <div class="quote-head-grid">
-      <div class="buyer-area"><div class="buyer-main">${buyerText}</div><div class="buyer-note">※ 견적 유효기간 : 견적일로부터 30일</div></div>
-      <div><table class="seller-table">
-        <tr><th style="width:18%">상&nbsp;&nbsp;&nbsp;&nbsp;호</th><td class="centerval" style="width:24%">(주)더사가</td><th style="width:20%">사업자번호</th><td class="centerval" style="width:38%">156-87-03539</td></tr>
-        <tr><th>대&nbsp;&nbsp;&nbsp;&nbsp;표</th><td class="centerval">구 광 회</td><th>종&nbsp;&nbsp;&nbsp;&nbsp;목</th><td class="centerval">사무용가구외</td></tr>
-        <tr><th>업&nbsp;&nbsp;&nbsp;&nbsp;태</th><td class="centerval">제조업</td><th>종&nbsp;&nbsp;&nbsp;&nbsp;업</th><td class="centerval">조달 / 가구</td></tr>
-        <tr><th>주&nbsp;&nbsp;&nbsp;&nbsp;소</th><td colspan="3" class="value">경상북도 경산시 진량읍 일연로 502-13</td></tr>
-        <tr><th>연 락 처</th><td colspan="3" class="centerval">TEL : 053-852-2033 &nbsp;&nbsp;FAX : 053-852-2034</td></tr>
-        <tr><th>E-MAIL</th><td colspan="3" class="centerval">thesaga2020@naver.com</td></tr>
-      </table></div>
+    <div class="quote-top-title">
+      <div class="quote-logo-wrap"><img src="${getLogoUrl()}" onerror="this.style.display='none'"></div>
+      <div class="quote-doc-title">[ 견 적 서 ]</div>
     </div>
-    <table class="quote-name-row"><tr><td class="label">견 적 명</td><td class="value">조달 물품 견적</td><td class="label">일 자</td><td class="value">${meta.dateStr}</td></tr></table>
-    <table class="amount-row"><tr><td class="amount-text">합계금액&nbsp;&nbsp;&nbsp;${numberToKorean(meta.finalTotal)}정(부가세포함가)</td><td class="currency">₩</td><td class="amount-num">${moneyPlain(meta.finalTotal)}</td></tr></table>
-    <table class="quote-table"><thead><tr><th style="width:40px">순번</th><th>품명</th><th style="width:128px">이미지</th><th style="width:150px">규격</th><th style="width:40px">수량</th><th style="width:72px">단가</th><th style="width:124px">금액</th><th style="width:98px">비고</th></tr></thead><tbody>${itemRows}<tr class="discount-row"><td></td><td>할인</td><td class="percent-cell">${meta.discountRate}</td><td class="percent-cell">%</td><td></td><td>-</td><td>${moneyPlain(meta.discountAmount)}</td><td></td></tr><tr class="final-row"><td></td><td></td><td></td><td></td><td></td><td>합 계</td><td>${moneyPlain(meta.finalTotal)}</td><td></td></tr></tbody></table>
-    <div class="special-box"><div class="special-title">* 특이사항</div><div class="special-content">${meta.specialNote || ''}</div></div>
+
+    <div class="quote-head-wrap">
+      <div class="quote-head-grid">
+        <div class="buyer-area">
+          <div class="buyer-main">${buyerText}</div>
+          <div class="buyer-note">※ 견적 유효기간 : 견적일로부터 30일</div>
+        </div>
+        <div>
+          <table class="seller-table">
+            <tr><th style="width:18%">상&nbsp;&nbsp;&nbsp;&nbsp;호</th><td class="centerval" style="width:24%">(주)더사가</td><th style="width:20%">사업자번호</th><td class="centerval" style="width:38%">156-87-03539</td></tr>
+            <tr><th>대&nbsp;&nbsp;&nbsp;&nbsp;표</th><td class="centerval">구 광 회</td><th>종&nbsp;&nbsp;&nbsp;&nbsp;목</th><td class="centerval">사무용가구외</td></tr>
+            <tr><th>업&nbsp;&nbsp;&nbsp;&nbsp;태</th><td class="centerval">제조업</td><th>종&nbsp;&nbsp;&nbsp;&nbsp;업</th><td class="centerval">조달 / 가구</td></tr>
+            <tr><th>주&nbsp;&nbsp;&nbsp;&nbsp;소</th><td colspan="3" class="value">경상북도 경산시 진량읍 일연로 502-13</td></tr>
+            <tr><th>연 락 처</th><td colspan="3" class="centerval">TEL : 053-852-2033 &nbsp;&nbsp;FAX : 053-852-2034</td></tr>
+            <tr><th>E-MAIL</th><td colspan="3" class="centerval">thesaga2020@naver.com</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <table class="quote-name-row">
+        <tr><td class="label">견 적 명</td><td class="value">조달 물품 견적</td><td class="label">일 자</td><td class="value">${meta.dateStr}</td></tr>
+      </table>
+      <table class="amount-row">
+        <tr><td class="amount-text">합계금액&nbsp;&nbsp;&nbsp;${numberToKorean(meta.finalTotal)}정(부가세포함가)</td><td class="currency">₩</td><td class="amount-num">${moneyPlain(meta.finalTotal)}</td></tr>
+      </table>
+    </div>
+
+    <div class="quote-body-wrap">
+      <table class="quote-table">
+        <thead>
+          <tr><th style="width:40px">순번</th><th>품명</th><th style="width:128px">이미지</th><th style="width:150px">규격</th><th style="width:40px">수량</th><th style="width:72px">단가</th><th style="width:124px">금액</th><th style="width:98px">비고</th></tr>
+        </thead>
+        <tbody>
+          ${itemRows}
+          <tr class="discount-row">
+            <td></td><td>할인</td><td class="rate-cell">${discountRateText}</td><td></td><td></td><td>-</td><td class="neg-amount">${discountAmountText}</td><td></td>
+          </tr>
+          <tr class="final-row">
+            <td></td><td></td><td></td><td></td><td></td><td>합 계</td><td>${moneyPlain(meta.finalTotal)}</td><td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="special-box">
+        <div class="special-title">* 특이사항</div>
+        <div class="special-content">${meta.specialNote || ''}</div>
+      </div>
+    </div>
   </div>`;
 }
 function showPreview(){ const html = buildQuotePreviewHTML(); if(!html){ alert('견적 리스트가 비어 있습니다.'); return; } previewContent.innerHTML = html; previewModal.classList.add('show'); }
 function closePreview(){ previewModal.classList.remove('show'); }
 async function makePreviewImageFile(){
-  const capture = document.getElementById('quoteCaptureArea'); if(!capture){ alert('먼저 견적서생성을 눌러 미리보기를 띄워 주세요.'); return null; }
+  const capture = document.getElementById('quoteCaptureArea');
+  if(!capture){ alert('먼저 견적서생성을 눌러 미리보기를 띄워 주세요.'); return null; }
   const images = [...capture.querySelectorAll('img')];
   await Promise.all(images.map(img => img.complete ? Promise.resolve() : new Promise(resolve => { img.onload = img.onerror = resolve; })));
   const canvas = await html2canvas(capture, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0)); if(!blob) return null;
-  const meta = getQuoteMeta(); const file = new File([blob], `더사가_견적서_${meta.fileDate}.png`, { type: 'image/png' }); lastSavedImageFile = file; return file;
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
+  if(!blob) return null;
+  const meta = getQuoteMeta();
+  const file = new File([blob], `더사가_견적서_${meta.fileDate}.png`, { type: 'image/png' });
+  lastSavedImageFile = file;
+  return file;
 }
 async function savePreviewImage(){ if(!previewModal.classList.contains('show')) showPreview(); const file = await makePreviewImageFile(); if(!file) return; const url = URL.createObjectURL(file); const a = document.createElement('a'); a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000); }
 async function shareSavedImage(){ if(lastSavedImageFile && navigator.canShare && navigator.canShare({ files:[lastSavedImageFile] })){ try { await navigator.share({ title:'더사가 견적서', files:[lastSavedImageFile] }); return; } catch(err){ if(err && err.name === 'AbortError') return; } } shareFileInput.value = ''; shareFileInput.click(); }
