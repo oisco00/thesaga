@@ -213,22 +213,17 @@ function moneyPlain(v){ return num(v).toLocaleString('ko-KR'); }
 function uniq(arr){ return [...new Set(arr.filter(v => v !== null && v !== undefined && String(v).trim() !== ''))].sort(); }
 function fillSelect(sel, values){ sel.innerHTML = '<option value="">선택</option>'; values.forEach(v => { const opt = document.createElement('option'); opt.value = String(v); opt.textContent = String(v); sel.appendChild(opt); }); }
 
-const ASSET_BASE = `${location.origin}/thesaga/`;
 function getImageUrl(item){
   let p = String(item["이미지경로"] || "");
   p = p.replace(/[\r\n\t]/g, "").trim();
   p = p.replace(/[\u200B-\u200D\uFEFF]/g, "");
-
-  if (!p) return "";
-  if (/^https?:\/\//i.test(p)) return p;
-
-  return new URL(encodeURI(p.replace(/^\.?\//, "")), ASSET_BASE).toString();
+  return p ? encodeURI(p.replace(/^\.?\//, "")) : "";
 }
 
 function getLogoUrl(){
-  return new URL("logo/logo.png", ASSET_BASE).toString();
+  return encodeURI("logo/logo.png");
 }
- 
+
 function getLogoUrl(){ return CDN_BASE + "logo/logo.png"; }
 function getFilteredBase(){ const c = categorySel.value; if(!c) return []; return data.filter(x => x["분류"] === c); }
 
